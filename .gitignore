@@ -1,0 +1,13 @@
+# LaTeX build output (the deposited PDF is typed-crossings-v1.0.pdf)
+main.pdf
+*.aux
+*.log
+*.out
+*.blg
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Local working notes
+DESIGN.md

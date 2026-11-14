@@ -1,0 +1,69 @@
+\section{The typed multigraph in Lean 4}
+\label{app:basic}
+
+The complete definitions of \code{LemLean/Basic.lean}. Section references in the
+comments are to LEM \citep{kreinzlem}.
+
+\lstinputlisting[linerange={17-105}]{code/Basic.lean}
+
+\section{The deontic results}
+\label{app:deontic}
+
+From \code{LemLean/Deontic.lean}: the standing of an omission under three norm types and
+under two, and the three results of Section~\ref{sec:deontic}. The code calls the
+omission an idle step and writes it \code{skip}; it means that the agent does not
+perform the act, not a stuttering step of a refinement. The model has no deadline and no
+condition of applicability, so an obligation in it is one that is applicable, due and
+undischarged.
+
+\lstinputlisting[linerange={20-50,53-104}]{code/Deontic.lean}
+
+\section{The two worked crossings}
+\label{app:crossing}
+
+From \code{LemLean/Crossing.lean}: the three roles, the cast from the natural numbers to
+the integers, and the reading of a 64-bit vector as a number.
+
+\lstinputlisting[linerange={70-162}]{code/Crossing.lean}
+
+\section{A condition under which a shared trace has different verdicts}
+\label{app:uniqueness}
+
+Corollary~\ref{cor:split} needs two mechanisms that write the same trace with different
+verdicts. One condition that forces different verdicts is that a trace describes at
+most one mechanism.
+
+\begin{assumption}[A trace describes at most one mechanism]
+\label{ass:functional}
+For all $t \in T$ and $m_1, m_2 \in M$: if $\faithful(t,m_1)$ and $\faithful(t,m_2)$ then
+$m_1 = m_2$.
+\end{assumption}
+
+\begin{proposition}[A shared trace is not faithful to both]
+\label{prop:both}
+Under Assumption~\ref{ass:functional}, if $m_1 \neq m_2$ and
+$\produce(m_1) = \produce(m_2)$, then not both $F(m_1)$ and $F(m_2)$.
+\end{proposition}
+
+\begin{corollary}
+\label{cor:functional}
+Under Assumption~\ref{ass:functional}, if $m_1 \neq m_2$,
+$\produce(m_1) = \produce(m_2)$ and $F(m_1)$, then no judgement on traces agrees with
+faithfulness.
+\end{corollary}
+
+The assumption is contestable: a useful description can fit several implementations.
+One response is to count mechanisms that differ only in ways the description is not
+meant to capture as one element of $M$. That requires $\produce$ to be well defined on
+the resulting classes, which can fail, since mechanisms that are alike in the relevant
+respect may still write different text. Proposition~\ref{prop:char} and
+Corollary~\ref{cor:split} do not use the assumption and avoid the question.
+
+In the Lean file, Proposition~\ref{prop:both} is the theorem
+\code{not\_both\_faithful}, and the corollary is the theorem
+\code{no\_trace\_only\_faithfulness\_test}. The file ends with a two-route example, in
+which one valid trace is written by a route that follows the stated rules and by a
+route that uses a hint the trace does not mention. It shows that the hypotheses can be
+satisfied together.
+
+\lstinputlisting[linerange={41-44,50-72,105-142}]{code/Trace.lean}

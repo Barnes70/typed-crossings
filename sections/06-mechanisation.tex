@@ -1,0 +1,165 @@
+\section{Mechanisation in Lean 4}
+\label{sec:mech}
+
+The following parts of this paper are formalised in the Lean package \code{lem-lean}
+\citep{kreinzlemlean}: the graph model of LEM on which the vocabulary rests, the typed
+crossing of Definition~\ref{def:typed} with the two maps of
+Section~\ref{sec:three-kinds} as worked examples, the small deontic model of
+Section~\ref{sec:deontic}, and the model of reasoning systems of
+Section~\ref{sec:kernel} with its results. Section~\ref{sec:mech-limits} says what is
+not formalised. The listings in this section and in the appendix are taken unchanged
+from version 0.4.0 of the package (commit \code{c111aaf}).
+
+\subsection{Layers, nodes and typed edges}
+
+The package follows the minimal formalisation given in LEM: a typed multigraph. Nodes are
+indexed by layer, predicates are local to a layer, and edges form a type of their own
+with a map to their edge type. Duration is a function on the causal edges alone. The
+central definitions are these (the complete file is in
+Appendix~\ref{app:basic}):
+
+\lstinputlisting[linerange={32-36,45-48,70-88}]{code/Basic.lean}
+
+\noindent
+Three things follow from the types alone.
+
+\begin{enumerate}[label=(\arabic*)]
+  \item \emph{No cross-layer application of a predicate.} If a predicate is declared at
+        one layer, applying it to a node of another layer is a type error. The layer is
+        part of the node's type, so this holds even in a model whose two layers have the
+        same carrier.
+  \item \emph{No duration on a non-causal edge.} \code{CausalDuration.deltaT} takes a
+        causal edge, which is an edge together with a proof that its type is causal. For
+        a constitutive, classificatory or normative edge that proof does not exist, and
+        a term that asks for its $\Dt$ is ill-typed.
+  \item \emph{Duration belongs to the edge, not to the pair of nodes.} Because edges are
+        a type of their own, two causal edges between the same two nodes are two edges
+        and may carry different durations.
+\end{enumerate}
+
+\noindent
+The first two are covered by negative tests: terms that Lean must reject, with the
+expected error recorded. The third is a theorem.
+
+\subsection{Typed crossings}
+\label{sec:mech-crossing}
+
+An edge of the graph above carries a label for its type and nothing else. A typed
+crossing in the sense of Definition~\ref{def:typed} has two components, and the package
+states the second as propositions that have to be proved:
+
+\lstinputlisting[linerange={21-66}]{code/Crossing.lean}
+
+\noindent
+The structure \code{Crossing} itself holds only the kind and the relation. What the
+crossing carries is not stored in it: each preservation statement is a separate theorem
+about the crossing. The declared crossing together with its proved statements is what
+Definition~\ref{def:typed} calls a typed crossing. \code{transport} is the reuse of a
+claim. It takes the preservation proof as an
+argument, so a claim established at the source cannot be asserted at the target without
+one. \code{kind\_not\_determined} holds by construction: the kind is a field that the
+relation does not constrain. The theorem records that design decision. It is not a
+discovery about maps.
+
+The two maps of Section~\ref{sec:three-kinds} are stated as crossings with declared
+kinds. For the cast, addition is carried unconditionally, subtraction under its side
+condition and not without it, and the order is invariant. The listing shows the
+definition and the two results on subtraction; the rest is in
+Appendix~\ref{app:crossing}.
+
+\lstinputlisting[linerange={80-84,95-110}]{code/Crossing.lean}
+
+\noindent
+The reading of a 64-bit vector as a number is treated in the same way: addition is
+carried while nothing overflows, and not otherwise. Both maps are proved injective, and their declared kinds differ. This is the
+formal counterpart of the observation that two maps of the same structure can be used
+in different roles.
+
+\subsection{Reasoning traces}
+
+The model of Section~\ref{sec:kernel} and its results are formalised as follows. The
+proofs are included to show their size. Proposition~\ref{prop:blind} is
+\code{valid\_blind\_to\_mechanism}, Proposition~\ref{prop:char} is
+\code{trace\_only\_test\_iff} and Corollary~\ref{cor:split} is
+\code{no\_trace\_only\_test\_of\_split}. In this file the reading of \code{produce},
+\code{valid} and \code{faithful} as a causal, a classificatory and a representational
+edge is given in comments. The types do not enforce it. The remaining results of the
+file are in Appendix~\ref{app:uniqueness}.
+
+\lstinputlisting[linerange={29-40,45-49,74-101}]{code/Trace.lean}
+
+\subsection{What is checked}
+
+Table~\ref{tab:mech} lists the content of the package. It has no dependency on Mathlib
+and contains no \code{sorry}. Lean's \code{\#print axioms} reports at most
+\code{propext}, one of Lean's three standard axioms; the results on reasoning traces,
+the deontic results and the locality results use no axioms. The toolchain is pinned to
+Lean~4.35.0, and the build, including the negative tests, runs in continuous
+integration.
+
+\begin{table}[t]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}P{3.1cm}L@{}}
+\toprule
+File & Content \\
+\midrule
+\code{Basic.lean} &
+  Layers, layer-indexed nodes, layer states, local predicates and relations, declared
+  co-reference, the six edge types, the event graph, causal duration, the three deontic
+  types, the type-level stratum. \\
+\code{Duration.lean} &
+  No duration for constitutive, classificatory or normative edges; the total,
+  option-valued reading of $\Dt$ is undefined exactly on the non-causal edges; two
+  parallel causal edges may carry different durations. \\
+\code{Locality.lean} &
+  A layer-respecting state assignment on the whole graph is the same thing as a family
+  of layer states, and a predicate on the whole graph the same thing as a family of
+  local predicates. \\
+\code{Deontic.lean} &
+  With three norm types the type alone settles the standing of an omission; with two it
+  does not; the reduction of prohibition to obligation leaves every verdict on an
+  omission unchanged (Section~\ref{sec:deontic}; statements in
+  Appendix~\ref{app:deontic}). \\
+\code{Crossing.lean} &
+  A crossing with a declared kind; preservation, reflection and invariance of
+  predicates; invariance of a relation; an operation carried under a side condition;
+  reuse of a claim by a preservation proof. Two worked crossings, $\N \to \Z$ and
+  \code{BitVec 64} $\to \N$, with their side conditions and counterexamples. \\
+\code{Trace.lean} &
+  Propositions~\ref{prop:blind} and~\ref{prop:char} and Corollary~\ref{cor:split}; the
+  uniqueness-based results and the two-route example of
+  Appendix~\ref{app:uniqueness}. \\
+\code{Rejections.lean} &
+  Negative tests: a predicate of one layer applied to a node of another, also where
+  both layers share a carrier; $\Dt$ asked of a normative edge. \\
+\bottomrule
+\end{tabularx}
+\caption{Content of the \code{lem-lean} package, version 0.4.0.}
+\label{tab:mech}
+\end{table}
+
+\subsection{What the mechanisation does and does not establish}
+\label{sec:mech-limits}
+
+\paragraph{It is partial.} Of the three cases, only the first is stated as a typed
+crossing in Lean, and for two maps and a handful of operations. The package does not
+reproduce what Mathlib's bundled morphisms and cast lemmas provide, and it does not
+connect to them. The refinement case of Section~\ref{sec:refinement} is not formalised
+at all. The reasoning-system model of Section~\ref{sec:kernel} is formalised on its own
+terms and not as an instance of the crossing structure. The event graph and the
+crossing structure are also not connected: an edge of the graph does not carry
+preservation statements.
+
+\paragraph{It checks consequences, not fit.} The checker establishes that the stated
+results follow from the stated definitions, and that a declaration, once made, is used
+consistently. It does not establish that the definitions fit any real system, or that a
+declared type is the right one. The encoding does not decide the type of any edge: types
+are declared by the modeller. The tests by which LEM proposes to decide them are not
+formalised, and LEM records that they have not been validated between raters.
+
+The same holds for the model of reasoning systems. That the results of
+Section~\ref{sec:kernel} are machine-checked says nothing about whether
+Definition~\ref{def:rs} describes a given model well. That is a question about the
+crossing from the formal model to the system modelled, a representational one, and the
+kernel does not test it. The paper's thesis applies to its own artefact: verifying the
+proofs verifies the proofs.

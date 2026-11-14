@@ -1,0 +1,100 @@
+\section{Introduction}
+\label{sec:intro}
+
+Three problems from three fields have the same shape.
+
+\paragraph{A cast.} In the proof assistant Lean~4 \citep{demoura2021}, the two expressions
+below differ only in where a natural number is turned into an integer. The first evaluates
+to $0$, the second to $-1$:
+\begin{lstlisting}
+example : ((2 - 3 : Nat) : Int) = 0 := rfl
+example : ((2 : Nat) - (3 : Nat) : Int) = -1 := rfl
+\end{lstlisting}
+The symbol \code{-} is the same in both lines. What it means depends on which side of the
+cast it is evaluated on, and the author of the expression does not write the cast.
+
+\paragraph{A verified kernel.} The functional-correctness proof of the seL4 microkernel
+establishes that its C implementation refines an abstract specification
+\citep{klein2009}. The proof has no notion of time and so makes no claim about timing
+channels. Isolation in time had to be added later, as a mechanism of its own
+\citep{ge2019}. The kernel was verified, and a property a user might take ``verified'' to
+include was not among the properties the proof carried from the specification to the
+code.
+
+\paragraph{A valid chain of reasoning.} A language model writes out a chain of steps
+before its answer, or a proof that a proof checker accepts. A check on that text can
+establish that every step follows from the ones before it. It does not establish that the
+text describes how the model arrived at its answer. In controlled studies, models whose
+answers were changed by a hint often did not mention the hint in the reasoning they wrote
+\citep{turpin2023,chen2025}.
+
+\medskip
+In each case a claim is established on one side of a boundary and reused on the other: an
+identity on $\N$ reused on $\Z$, a property of a specification reused of an
+implementation, the validity of a text reused as an account of a computation. Whether the
+reuse is sound depends on the map or relation that crosses the boundary, on what kind of
+crossing it is and on what it preserves. In each case the thing that is reused, a symbol,
+the word ``verified'', the word ``reasoning'', does not say.
+
+\paragraph{Thesis.} A crossing along which claims are carried should be declared and
+typed: by its kind, which fixes what a failure of the crossing consists in, and by what it
+preserves, under which conditions.
+
+\paragraph{What the fields already do.} None of the three fields lacks this insight. Each
+applies it locally. Lean's mathematical library Mathlib records what a cast preserves in
+bundled morphisms and in lemmas registered for its cast tactics
+\citep{mathlib2020,lewis2020}. Verification practice proves the preservation of each
+further property separately, and the theory of secure compilation classifies compilers by
+the class of properties they preserve \citep{clarkson2010,abate2019}. Interpretability
+research separates the faithfulness of an explanation from its plausibility and tests the
+former by intervening on the model \citep{jacovi2020,geiger2025}. What these local
+solutions have in common is not usually stated, because the three literatures do not
+share a vocabulary. This paper proposes one.
+
+\paragraph{Kind of paper.} This is a position paper with a machine-checked artefact. It
+reports no new experiments and proves no deep theorem. Its claims are of three sorts:
+readings of existing practice, which can be checked against the literature cited;
+definitions and elementary results, some of which are checked in Lean; and two
+predictions, which are marked as untested.
+
+\paragraph{Contributions.}
+\begin{enumerate}[label=(\arabic*)]
+  \item \emph{A common reading of three practices.} Cast lemmas in Mathlib, per-property
+        preservation proofs in system verification, and faithfulness tests for written
+        model reasoning are shown to address one situation: a claim established on one
+        side of a crossing is reused on the other
+        (Sections~\ref{sec:casts}--\ref{sec:reasoning}).
+  \item \emph{A small vocabulary for declaring a crossing.} A crossing is declared by its
+        kind and by what it preserves (Section~\ref{sec:rule}). The kind cannot be
+        inferred from the map alone, because two maps with the same formal properties can
+        differ in the role in which they are used (Section~\ref{sec:three-kinds}). The
+        vocabulary is taken from Layered Event Modelling \citep{kreinzlem} and restated
+        here in the minimal form the argument needs.
+  \item \emph{What a check on a trace certifies.} The validity of a written trace and its
+        faithfulness to the computation that produced it are crossings of different
+        kinds. A judgement made on the trace alone can agree with faithfulness exactly
+        when faithfulness does not vary among the computations that write the same
+        trace. Where one trace is written by two computations and describes only one of
+        them, no such judgement exists (Section~\ref{sec:kernel}).
+  \item \emph{A partial mechanisation.} The graph model behind the vocabulary, the
+        typed crossing with two worked examples from the first case, and the results on
+        traces are formalised in Lean~4 and published as an open-source package
+        \citep{kreinzlemlean}. The refinement case is not formalised.
+        Section~\ref{sec:mech} states what the mechanisation does and does not
+        establish.
+  \item \emph{Two testable predictions} about where automated provers fail and about
+        what a declaration of kind adds
+        (Section~\ref{sec:limits}).
+\end{enumerate}
+
+\paragraph{What is not claimed.} The paper does not claim that any of the three fields
+has overlooked the problem; that the vocabulary of Layered Event Modelling transfers to
+other domains in general, since three cases chosen by the author are evidence and not
+proof; that written model reasoning is usually unfaithful, or of no value as evidence; or
+that checking the results in Lean shows the definitions to fit real systems.
+
+\paragraph{Outline.} Section~\ref{sec:rule} states the rule and the vocabulary.
+Sections~\ref{sec:casts}, \ref{sec:refinement} and~\ref{sec:reasoning} are the three
+cases; each is written to be read without the others and without background in the other
+fields. Section~\ref{sec:mech} describes the mechanisation, Section~\ref{sec:related} the
+related work, and Section~\ref{sec:limits} the limitations and the predictions.

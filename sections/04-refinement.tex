@@ -1,0 +1,194 @@
+\section{Case: refinement proofs}
+\label{sec:refinement}
+
+\paragraph{Background.} When a proof assistant is used to verify an operating-system
+kernel such as seL4 \citep{klein2009} or a compiler such as CompCert \citep{leroy2009},
+the standard method is \emph{refinement}. An implementation refines a specification when
+every behaviour of the implementation, as far as it is visible at the level of the
+specification, is a behaviour the specification allows. The usual proof technique links
+the two by a simulation relation
+$R \subseteq S_{\mathrm{impl}} \times S_{\mathrm{spec}}$, such that every concrete step
+is matched by an abstract step, or by none (a stuttering step), and $R$ is preserved.
+Matching steps in this way establishes the inclusion for safety properties. Liveness
+needs a further argument, since an implementation that stutters forever matches every
+step and does nothing \citep{abadi1991}.
+
+\subsection{What one relation does not say}
+
+What a refinement proof carries from the specification to the implementation is what the
+inclusion of behaviours preserves, and no more. A property of single executions that
+holds of every behaviour of the specification holds of every behaviour of the
+implementation; that is the point of the method. Properties that compare executions do
+not carry over in general. \citet{clarkson2010} show that refinement, which never
+invalidates a property of single traces, can invalidate a hyperproperty such as
+noninterference: a system that satisfies a confidentiality policy can have a refinement
+that violates it. The security literature knows this as the refinement paradox.
+
+The practice of the field confirms it one property at a time. The functional-correctness
+proof of seL4 makes no claim about information flow or about timing. Information-flow
+enforcement was established by a further proof \citep{murray2013}, and time protection
+was added as a mechanism of its own \citep{ge2019}. The semantic preservation theorem of
+CompCert does not say that compiled code keeps the constant-time behaviour of its source;
+that took a modified compiler and a separate proof \citep{barthe2020}. Each time a
+further property was carried across the same boundary, and each time it needed a
+preservation argument of its own. In the vocabulary of Section~\ref{sec:casts} these are
+move lemmas, registered one property at a time.
+
+Where verified systems fail in use, the failures sit where this account expects them.
+\citet{fonseca2017} examined three formally verified distributed systems and found
+sixteen bugs. None was in the protocols that the proofs covered. They lay in what the
+proofs had to assume: the interface to unverified code, the specifications, and the
+tools that checked the proofs. What failed was the transfer of a predicate. ``Verified'' is
+established of a model, under stated assumptions and for a stated property, and is then
+said of the artefact. That is the reuse that predicate locality (A2) restricts: a
+predicate carried to another layer without showing that its truth conditions hold there.
+
+\subsection{Five structures behind one relation}
+
+A refinement relation is usually drawn as one vertical arrow between two levels. The five
+structures of Section~\ref{sec:vocabulary} each correspond to a question that the
+relation, taken alone, leaves open (Table~\ref{tab:five}).
+
+\begin{table}[t]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}P{2.1cm}P{3.3cm}L@{}}
+\toprule
+Structure & In verification & What a single refinement relation leaves undeclared \\
+\midrule
+S1 Substrate &
+  Hardware: registers, caches, memory cells. &
+  Causal paths that run through the substrate and are absent from the model. Spectre
+  leaks through cache state that the instruction-set model does not contain, and leaves
+  the modelled state untouched \citep{kocher2019}. Rowhammer differs in kind: a fault
+  flips bits, and so changes the modelled state by a transition the model does not have
+  \citep{kim2014}. \\
+S2 Event abstraction &
+  Operational semantics: small-step, big-step, traces. &
+  Big-step semantics relates initial states to final states. Intermediate states and
+  durations are abstracted away, so an interleaving between two concrete steps of one
+  abstract step cannot be stated at the abstract level. \\
+S3 Representation &
+  Bytes in memory, the parsed syntax tree, the abstract value. &
+  A functional-correctness proof of a parser establishes correspondence: the tree
+  represents the bytes. It is silent on provenance, and a verified parser parses a
+  forged message correctly. Provenance is a different property with proofs of its own,
+  such as authentication in protocol verification. \\
+S4 Epistemic access &
+  Observational equivalence, noninterference; monitors and logs. &
+  What an observer can infer is a property of sets of executions, which refinement does
+  not preserve in general. And an observation is produced by a process with a latency of
+  its own, which is no part of the transition observed. \\
+S5 Normative &
+  Security policies, access-control rules, contracts. &
+  Encoding a prohibition as an obligation to omit keeps every verdict, but the type of a
+  norm then no longer says what an omission means
+  (Section~\ref{sec:deontic}). \\
+\bottomrule
+\end{tabularx}
+\caption{Five structures, and the question each raises that a refinement relation alone
+does not answer.}
+\label{tab:five}
+\end{table}
+
+\subsection{A refinement relation has no duration}
+\label{sec:duration}
+
+On the mechanistic account of levels, relations between levels are constitutive and not
+causal. The higher-level state is realised by the lower-level states at the same time,
+and what looks like causation between levels is causation within a level together with
+constitution \citep{craver2007}. A simulation relation is of this kind. It says which
+abstract state a concrete state amounts to or, for data, which abstract value some bytes
+represent. Nothing passes from the one to the other and no time elapses. Such an edge has
+no $\Dt$. The duration is undefined, not zero, because duration is a function on causal
+edges alone. This is a statement about the relation, not about the two models it links.
+Each of them can represent time and intermediate states in its own transitions, to
+whatever extent its semantics provides.
+
+Two points follow, one inside verification and one outside it.
+
+The first concerns atomic steps. A step that is atomic in the specification may be
+realised by several concrete steps with time between them. At the abstract level that
+interval does not exist. Whether anything can happen in it is a question about the
+concrete model. A refinement proof can establish that the concrete steps together
+implement the atomic operation, and where the concrete model contains the interleavings
+and the interference that can occur between them, an attack in the window would show as
+a behaviour the specification forbids, and the proof would fail. The gap opens where the
+concrete model leaves them out: a sequential model of code that runs concurrently, or an
+environment assumed to be passive. Time-of-check to time-of-use races and reentrancy
+have this form. The check and the use are one step above and two below, and the proof
+covers the window exactly as far as the concrete model does.
+
+The second lies in modelling consequences. In a risk model, the arrows from a system
+event to a data event to a business event also run upward, from a technical description
+to a business one. They are not refinement. In the consequence chain of the taxonomy for
+which LEM was developed \citep{kreinztlctc}, malware alters a payment-generation process,
+a false payment instruction is generated, and funds are transferred. These are three
+events, not three descriptions of one. Time elapses between them, and payment screening
+can intervene between the second and the third. Drawn as levels of one stack, they invite
+the constitutive reading, and with it the window in which monitors and circuit-breaker
+controls act disappears from the model. This is why the type of an edge is determined per
+edge, by the two tests of Section~\ref{sec:vocabulary}, and not by which pair of layers
+the edge connects.
+
+\subsection{The normative crossing: three deontic types}
+\label{sec:deontic}
+
+The link from a step of a trace to the norm it fulfils or violates is also a crossing,
+and here the vocabulary of the norm decides what can be read off its type.
+
+Deontic logic can define a prohibition as an obligation to omit:
+$\mathrm{Forbid}(\varphi) \equiv \mathrm{Oblige}(\neg\varphi)$ \citep{vonwright1951}. The
+reduction is correct and costs nothing in expressive power. Every act and every omission
+receives the same verdict before and after it.
+
+What the reduction gives up is a diagnostic property, and the claim made for it here is
+a restricted one. Consider a norm about one act, a norm that applies to the case, and an
+agent who does not perform the act. Call this an omission. It is not the stuttering step
+of a refinement proof: a step can leave the abstract state unchanged while the
+implementation does a good deal, including the act in question.
+\begin{itemize}
+  \item Under a prohibition of the act, the omission is fulfilment.
+  \item Under an obligation to perform the act that is due and not yet discharged, the
+        omission is a violation.
+  \item Under a right, in the sense of a permission, it is neither. The right is simply
+        not exercised.
+\end{itemize}
+With three types, the type of the norm settles the standing of the omission. With two it
+does not. $\mathrm{Oblige}(\varphi)$ and $\mathrm{Oblige}(\neg\varphi)$ are both
+obligations, and the same omission violates the one and fulfils the other. Only the
+content of the norm tells them apart. That is the whole benefit: with a third type, one
+distinction can be read off the type without inspecting the content. LEM keeps three
+types for this reason. The choice is a modelling convention. It is not an argument that
+normative systems need three primitive types.
+
+The mechanised model (Appendix~\ref{app:deontic}) is correspondingly small. It has no
+deadline, no condition of applicability and no state of discharge: an obligation in it
+is an obligation that is applicable, due and undischarged.
+
+Why ``due'' matters has a standard formal ground, which depends on the content of a norm
+and not on its label. A norm that an event never occur is a safety property: a violation
+shows in a finite prefix of the trace. A norm that an act eventually be performed is a
+liveness property: no finite prefix violates it, because the act may still come
+\citep{alpern1985}. A deadline turns the second into something a monitor can find
+violated. Prohibitions are typically of the first form and obligations of the second,
+so a policy language that keeps the two types apart will tend to keep two kinds of check
+apart, but the type alone does not guarantee it.
+
+The right meant here is a permission, which \citet{hohfeld1913} calls a privilege. It is
+not his claim-right, the correlative of another party's duty.
+
+The normative edge is not classificatory: amending a counting rule changes what an event
+is counted as, while amending a norm changes what is required. And it carries no $\Dt$. A
+deadline is not a duration on this edge. It bounds a separate causal process, which runs
+from the event that starts the clock to the act that discharges the duty.
+
+\paragraph{What the field does, and what the rule adds.} Verification already proves the
+preservation of each further property separately, and the theory of hyperproperties and
+of secure compilation classifies what a refinement or a compiler preserves by class of
+property (Section~\ref{sec:related}). The rule adds two things to the preservation list.
+The first is the kind of the crossing: a simulation relation is constitutive or
+representational and has no duration, so a sequence of events with time between them,
+such as a consequence chain, should not be modelled as if it were a refinement. The
+second is the observation that ``verified'' is itself a predicate with a layer: it is
+established of a model, under that model's assumptions about concurrency and
+environment, and needs an argument of its own to be said of an artefact.

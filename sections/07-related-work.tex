@@ -1,0 +1,79 @@
+\section{Related work}
+\label{sec:related}
+
+\subsection{Coercions and subtyping}
+
+Implicit coercions have a long theory. \citet{breazu1991} interpret inheritance as
+implicit coercion and prove \emph{coherence}: the meaning of a term does not depend on
+which typing derivation, and so which insertion of coercions, is chosen.
+\citet{luo1999} develops coercive subtyping for dependent type theories, in which
+coercions are an abbreviation mechanism and coherence, the uniqueness of the coercion
+between two types, is the central requirement. Coherence answers the question
+\emph{which} map is inserted. The question raised in Section~\ref{sec:casts} is the next
+one: given the map, \emph{what} it preserves. The two are independent, since the unique
+cast from $\N$ to $\Z$ still fails to commute with truncated subtraction.
+
+Within Lean, the simplification of casts is described by \citet{lewis2020}, whose
+classification of lemmas into move, elim and squash is used in
+Section~\ref{sec:casts}, and the design of bundled morphisms and their classes by
+\citet{baanen2022}. This paper adds nothing to that machinery. It reads it as an
+instance of a more general practice.
+
+The requirement that truth be invariant under a change of notation is the satisfaction
+condition of the theory of institutions \citep{goguen1992}, where it is an axiom on
+translations between signatures. Predicate locality asks for the same invariance, but as
+an obligation to be discharged for each predicate that is reused across a boundary, and
+with the expectation that it will sometimes fail.
+
+\subsection{Refinement and the preservation of properties}
+
+That refinement preserves properties of single traces and not, in general, properties of
+sets of traces is the subject of \citet{clarkson2010}; the distinction between safety and
+liveness on which Section~\ref{sec:deontic} relies is due to \citet{alpern1985}. The
+theory of secure compilation makes the preservation list explicit. \citet{abate2019}
+define a family of criteria for compilers according to the class of properties that is
+preserved against adversarial contexts (trace properties, safety properties,
+hyperproperties and relational hyperproperties) and establish how the criteria relate;
+\citet{patrignani2019} survey the earlier criterion of full abstraction. These criteria
+are the most developed existing counterpart of the second component of a typed crossing:
+they type a compiler by what it preserves.
+
+The present paper is less precise than that work and differs in scope. It adds the first
+component, the kind of the crossing, and it includes among the things a crossing may fail
+to carry some that are not properties of traces at all: duration
+(Section~\ref{sec:duration}), provenance, and the standing of a step under a norm.
+
+\subsection{Faithfulness, causal abstraction and monitoring}
+
+\citet{jacovi2020} separate the faithfulness of an explanation from its plausibility and
+argue for a graded notion of faithfulness in place of a binary one. The model in
+Section~\ref{sec:kernel} uses a binary relation, which is the simplest setting in which
+the point about checks on text can be made; a graded notion would need a different
+formal treatment. Empirical work on written reasoning includes \citet{turpin2023},
+\citet{lanham2023} and \citet{chen2025}. \citet{barez2025} argue from this evidence that
+a chain of thought should not be treated as an explanation without causal validation,
+which is the conclusion of Section~\ref{sec:reasoning} reached from the empirical side.
+
+The formal theory of the crossing between an explanation and a mechanism is causal
+abstraction \citep{geiger2025}: a high-level causal model is an abstraction of a
+low-level one when interventions on the two correspond, and this is tested by
+intervening on the network. Proposition~\ref{prop:char} is far weaker than that theory
+and compatible with it. Its one point is conditional: where faithfulness differs
+between mechanisms that produce the same description, an exact judgement requires
+information beyond the description. Interventions on the network, as used in causal
+abstraction, are one way to obtain such information.
+
+\citet{korbak2025} argue that written reasoning is nevertheless a valuable signal for
+monitoring models, and a fragile one, since training methods or architectures may make
+it less legible. That position is consistent with this paper. A monitor that reads a
+trace obtains evidence, by an evidential edge, about what the model may do. The results
+here concern a different question, whether a check on the trace can decide that the
+trace describes the computation, and Remark~\ref{rem:scope}(b) keeps the two apart.
+
+\subsection{Levels and edge types}
+
+The distinction between constitutive and causal relations between levels is taken from
+the mechanistic account of \citet{craver2007}, and the intervention test for causal
+edges from \citet{woodward2003}. The edge taxonomy, the five structures and the axioms
+are those of LEM \citep{kreinzlem}, which discusses its own relation to the literature
+on levels, ontology and risk modelling.

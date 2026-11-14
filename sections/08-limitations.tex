@@ -1,0 +1,80 @@
+\section{Limitations and predictions}
+\label{sec:limits}
+
+\subsection{Limitations}
+
+\paragraph{Three cases, chosen by the author.} The cases were selected because the
+vocabulary fits them. They are evidence that the vocabulary of LEM can be carried to
+these three settings, and no more. Cases in which typing a crossing adds nothing, or in
+which the kinds proposed here do not apply, were not searched for.
+
+\paragraph{A parallel, not an identity.} The three roles of a map in
+Section~\ref{sec:three-kinds} and the six edge types of Table~\ref{tab:edges} overlap but
+were arrived at separately. The paper does not give one classification that covers both,
+and does not claim that either list is complete or that its members exclude one
+another.
+
+\paragraph{The mechanisation is partial.} The Lean package states the typed crossing
+and works it out for two maps from the first case. The refinement case is not
+formalised, the reasoning-system model is not expressed as a crossing, and the package
+is not connected to Mathlib (Section~\ref{sec:mech-limits}). That the kind of a
+crossing is not determined by its relation holds in the formal model by construction,
+and so adds no evidence for the claim.
+
+\paragraph{The kind is declared, not decided.} The rule asks that the kind of a crossing
+be declared. It does not supply a procedure that decides it. LEM proposes tests for edge
+types, two of which are used in Section~\ref{sec:duration}; they are not formalised, and
+their agreement between independent raters has not been measured. Where two modellers
+would declare different kinds for one crossing, the rule exposes the disagreement and
+does not resolve it.
+
+\paragraph{The results are elementary and rest on a model.} The weight of
+Section~\ref{sec:kernel} is carried by Definition~\ref{def:rs}, not by the proofs. The
+model treats faithfulness as a binary relation between a trace and a mechanism,
+presupposes that mechanisms can be individuated, and takes production to be a function.
+Each is a simplification (Remark~\ref{rem:scope}), and a graded notion of faithfulness
+is not covered. The deontic model of Section~\ref{sec:deontic} is smaller still: it has
+no deadlines and no conditions of applicability.
+
+\paragraph{No empirical evaluation.} The paper reports no experiments. In particular it
+does not show that real models contain two computations that write the same trace with
+different verdicts, nor how often, which is what determines how much
+Corollary~\ref{cor:split} matters in practice.
+
+\paragraph{The source of the vocabulary.} LEM is a method proposal by the same author,
+developed for risk modelling and published as a preprint. Its own validation is open,
+and this paper inherits that status for everything it takes from LEM.
+
+\paragraph{An outside view.} The paper addresses three research communities, and the
+author's own field is risk modelling. The accounts given here of Mathlib, of
+verification practice and of interpretability research rest on the literature cited, not
+on work inside those communities. Corrections from them are invited.
+
+\subsection{Two predictions}
+
+The argument yields two predictions that existing benchmarks of automated theorem
+proving could test. They are independent, and the second is the one that bears on the
+rule.
+
+\begin{prediction}[Crossings are where provers fail]
+Among the failures of automated provers on formal proof tasks, proof steps that cross a
+boundary (a cast, a change of representation, a step from an operational semantics to an
+invariant) are over-represented, relative to their share of all steps and compared with
+steps inside one structure.
+\end{prediction}
+
+\begin{prediction}[Declaring the kind helps beyond supplying the lemmas]
+Give a prover the preservation lemmas that are relevant to the crossings in a task. A
+prover that is given, in addition, a declaration of the kind of each crossing fails
+less often at crossings than one that is given the same lemmas without it.
+\end{prediction}
+
+No measurement is cited or reported here. The first prediction requires a classification
+of proof steps into crossing and non-crossing ones, fixed before the failure data are
+examined, and would be refuted by a failure rate at crossings that does not differ from
+the rate elsewhere. The second needs the baseline it names. Without it, an improvement
+would show only that supplying useful lemmas helps a prover, which is not in doubt. If
+the declaration of kind adds nothing over the lemmas, the first component of
+Definition~\ref{def:typed} has no measurable use in this setting, and the paper's case
+for it would rest on the diagnostic uses of Sections~\ref{sec:refinement}
+and~\ref{sec:reasoning} alone.

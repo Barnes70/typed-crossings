@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite the paper."
+type: article
+title: "Typed Crossings: What Casts, Refinement Proofs and Chain-of-Thought Checks Carry Across a Boundary"
+version: "1.0"
+date-released: 2026-11-14
+doi: 10.5281/zenodo.24219769
+license: CC-BY-4.0
+repository-code: "https://github.com/Barnes70/typed-crossings"
+authors:
+  - family-names: Kreinz
+    given-names: Bernhard
+    orcid: "https://orcid.org/0009-0005-2148-9903"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24219768
+    description: Concept DOI (all versions)
+  - type: doi
+    value: 10.5281/zenodo.24219769
+    description: Version 1.0
+keywords:
+  - coercions
+  - refinement
+  - hyperproperties
+  - chain-of-thought faithfulness
+  - proof assistants
+  - Lean 4
+  - typed edges
+  - layered models

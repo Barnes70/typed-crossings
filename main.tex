@@ -1,0 +1,150 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{textcomp}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+
+% ---- theorem environments -------------------------------------------------
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{prediction}{Prediction}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+% ---- Lean listings ----------------------------------------------------------
+\lstdefinestyle{lean}{
+  basicstyle=\ttfamily\fontsize{7.7}{9.5}\selectfont,
+  showlines=true,
+  upquote=true,
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  showstringspaces=false,
+  frame=single,
+  framerule=0.3pt,
+  rulecolor=\color{black!35},
+  xleftmargin=3pt,
+  xrightmargin=3pt,
+  aboveskip=8pt,
+  belowskip=8pt,
+  literate=
+    {ℕ}{{$\mathbb{N}$}}1 {ℤ}{{$\mathbb{Z}$}}1 {↑}{{$\uparrow$}}1
+    {→}{{$\to$}}1 {←}{{$\leftarrow$}}1 {↔}{{$\leftrightarrow$}}1
+    {∀}{{$\forall$}}1 {∃}{{$\exists$}}1 {¬}{{$\neg$}}1 {∧}{{$\land$}}1
+    {≠}{{$\neq$}}1 {≤}{{$\leq$}}1 {≡}{{$\equiv$}}1
+    {₁}{{$_1$}}1 {₂}{{$_2$}}1
+    {Σ}{{$\Sigma$}}1 {Δ}{{$\Delta$}}1 {φ}{{$\varphi$}}1 {σ}{{$\sigma$}}1
+    {⟨}{{$\langle$}}1 {⟩}{{$\rangle$}}1
+    {§}{{\S}}1 {–}{{--}}1 {—}{{---}}1 {·}{{\textbullet}}1
+}
+\lstset{style=lean}
+
+% ---- small macros -----------------------------------------------------------
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Dt}{\Delta t}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\produce}{\mathit{produce}}
+\newcommand{\valid}{\mathit{valid}}
+\newcommand{\faithful}{\mathit{faithful}}
+
+\setlist{itemsep=2pt,topsep=4pt}
+\renewcommand{\arraystretch}{1.25}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\hypersetup{
+  pdftitle={Typed Crossings: What Casts, Refinement Proofs and Chain-of-Thought Checks Carry Across a Boundary},
+  pdfauthor={Bernhard Kreinz},
+  pdfkeywords={coercions, refinement, hyperproperties, chain-of-thought faithfulness, proof assistants, Lean 4, typed edges, layered models}
+}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Typed Crossings\par}
+  \vspace{0.5em}
+  {\large What Casts, Refinement Proofs and Chain-of-Thought Checks\\
+   Carry Across a Boundary\par}
+  \vspace{1.4em}
+  {\large Bernhard Kreinz\par}
+  \vspace{0.3em}
+  {\normalsize Barnes Projects\par}
+  {\small ORCID: \href{https://orcid.org/0009-0005-2148-9903}{0009-0005-2148-9903}\par}
+  \vspace{0.8em}
+  {\small Version 1.0 (preprint) \textperiodcentered{} November 2026 \textperiodcentered{}
+   DOI: \href{https://doi.org/10.5281/zenodo.24219769}{10.5281/zenodo.24219769}\par}
+\end{center}
+
+\vspace{0.6em}
+
+\begin{abstract}
+\noindent
+A claim established in one structure is routinely reused in another: an identity on the
+natural numbers after a cast to the integers, a property of a specification after
+refinement to an implementation, the validity of a written chain of reasoning as a
+statement about the computation that produced it. Whether the claim survives is a property
+of the map that carries it, and it cannot be read off the symbol or the word that is
+reused. This position paper argues that such a crossing should be declared and typed: by
+its \emph{kind}, which fixes what a failure of the crossing consists in, and by what it
+\emph{preserves}, under which conditions. Three cases are examined. In Lean~4, Mathlib's
+bundled morphisms and cast lemmas type the crossing wherever cast automation works. In
+system verification, properties beyond functional correctness are carried across a
+refinement one preservation proof at a time. In machine learning, the validity of a
+model's written reasoning and its faithfulness to the model's computation are two
+different crossings. A judgement on the trace alone can agree with faithfulness exactly
+when faithfulness does not vary among the computations that write the same trace; where
+one trace is written by two computations and describes only one of them, no check on the
+trace tells the two apart. Verify the trace, and you have verified the trace. Each field
+already handles the problem locally. The contribution is a common vocabulary, taken from
+Layered Event Modelling, that states what the local solutions share, together with a
+Lean~4 mechanisation: the underlying graph model, a crossing with a declared kind and
+associated preservation proofs, with casts as the worked example, and the results on
+traces. The
+mechanised results are elementary, the mechanisation covers only part of the paper, no
+new experiments are reported, and the paper states where its claims stop.
+\end{abstract}
+
+\noindent\textbf{Keywords:} coercions; refinement; hyperproperties; chain-of-thought
+faithfulness; proof assistants; Lean~4; typed edges; layered models.
+
+\vspace{0.8em}
+
+\input{sections/01-introduction}
+\input{sections/02-typed-crossings}
+\input{sections/03-casts}
+\input{sections/04-refinement}
+\input{sections/05-reasoning}
+\input{sections/06-mechanisation}
+\input{sections/07-related-work}
+\input{sections/08-limitations}
+\input{sections/09-conclusion}
+\input{sections/10-declarations}
+
+\newcommand{\doi}[1]{doi: \href{https://doi.org/#1}{\nolinkurl{#1}}}
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\appendix
+\input{sections/A-appendix}
+
+\end{document}

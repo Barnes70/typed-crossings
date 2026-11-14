@@ -1,0 +1,183 @@
+\section{Typed crossings}
+\label{sec:rule}
+
+\subsection{The argument}
+\label{sec:argument}
+
+Mathematicians apply a single symbol or predicate, such as $+$, $\le$, $\cong$,
+\emph{compact} or \emph{valid}, to objects of quite different construction. On the
+blackboard this abuse of notation is a feature. It compresses the exposition, because a
+competent reader reconstructs which structure is meant. A proof assistant has no such
+reader, and neither has the formal verification of a compiler or a kernel, nor the
+evaluation of a model's output. There the following argument applies.
+
+\begin{enumerate}[label=(P\arabic*)]
+  \item Distinct structures may give one symbol different truth conditions. Subtraction
+        on the natural numbers is not subtraction on the integers.
+  \item Reusing the symbol is harmless where its truth conditions are invariant under the
+        map between the structures. Where they are not, the reuse conceals a shift.
+  \item Which of the two holds is a property of the map and the operation together. It
+        cannot be read off the symbol.
+  \item Where the properties of the map are not declared, every proof and every claim
+        that crosses the boundary must establish them again, case by case. Where they are
+        declared, the crossing can be automated and its failure conditions can be stated.
+\end{enumerate}
+
+\noindent
+(P1)--(P3) are uncontroversial. (P4) is the practical premise, and the three cases are
+offered as evidence for it.
+
+\subsection{Vocabulary}
+\label{sec:vocabulary}
+
+The vocabulary is taken from Layered Event Modelling (LEM; \citealp{kreinzlem}), a method
+proposal for layered models of cyber and operational risk. LEM's axioms are stipulations
+adopted for their consequences, not theorems, and LEM says of itself that its transfer to
+other domains is untested and would have to be argued, not read off a resemblance. The
+cases below are such an argument for three domains. Only the following elements are
+used.
+
+\paragraph{Layers and locality.} A model assigns every node to exactly one layer (node
+typing, LEM axiom A1). A predicate is defined at a declared layer and may be reused at
+another only where its truth conditions and argument structure are demonstrably invariant
+(predicate locality, A2). Where nodes of different layers refer to the same thing, that
+co-reference is declared as a relation between distinct nodes (A3), so that a claim about
+one is not silently transferred to the other.
+
+\paragraph{Typed edges.} Every edge carries a declared type (A4). LEM types edges by what
+would have to be true for the edge to fail, and distinguishes six types
+(Table~\ref{tab:edges}). The table separates two things that the word ``fail'' can cover.
+An edge does not hold when what it asserts is false under fixed conditions. An edge can
+also depend on something declared, a scheme, a norm, a convention or a set of
+assumptions, and can then cease to hold while the world stays as it is, because what
+was declared is changed. That is a change of the conditions under which the edge is
+judged, not an error in judging it. LEM uses this dependence as a test for
+classificatory and normative edges. The table does not treat it as exclusive to them.
+The type determines which properties are defined for the edge.
+Duration, written $\Dt$, is defined for causal edges only: it is the duration of a
+transition along which one event brings about the next. For every other type it is
+undefined, not zero. The type of an edge is decided per edge, by test, and not by which
+pair of layers the edge connects. Two of LEM's tests are used below: whether a non-zero
+interval between the two ends is coherent, and whether an intervention can break the edge
+without changing what its two ends are \citep{woodward2003}.
+
+\begin{table}[t]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}P{2.7cm}LLP{3.0cm}c@{}}
+\toprule
+Edge type & What the edge asserts & Does not hold when &
+  Ceases to hold, the world unchanged, when & $\Dt$ \\
+\midrule
+Causal & One event brings about another, under intervention. &
+  The transition does not occur, or is interrupted. & --- & defined \\
+Constitutive & One state realises another at the same time; nothing propagates. &
+  The realising states do not obtain. & --- & --- \\
+Classificatory & An object satisfies the criteria of a declared scheme. &
+  The criteria are not met. & The scheme is changed. & --- \\
+Normative & An act or omission stands as fulfilment, or as violation, of a norm. &
+  The asserted standing is wrong under the applicable norm. &
+  The norm is amended, or no longer applies to the case. & --- \\
+Representational & A representation corresponds to a referent. &
+  The representation does not correspond (misrepresentation). &
+  The convention under which it is read is changed. & --- \\
+Evidential & An observation supports an inference. &
+  The observation does not support the inference. &
+  The background assumptions are changed. & --- \\
+\bottomrule
+\end{tabularx}
+\caption{The six edge types of LEM, restated. The third column gives what makes the
+asserted relation false under fixed conditions. The fourth gives what the edge depends
+on that is declared and could be changed. The entries for the last two rows are this
+paper's reading, not LEM's. Duration is defined for causal edges only.}
+\label{tab:edges}
+\end{table}
+
+\paragraph{Five structures.} LEM separates five structures that layered models tend to
+draw as one stack: a substrate (S1: the physical and computational entities that bear
+everything else), an event abstraction (S2: events and the causal transitions between
+them), representation (S3: descriptions and what they describe), epistemic access (S4:
+observation and inference) and normative standing (S5: norms and the standing of acts
+against them). They are not levels of one ladder. Sections~\ref{sec:refinement}
+and~\ref{sec:reasoning} use them to sort the questions that one overloaded relation or
+word leaves open.
+
+\medskip
+LEM has two further axioms, on the direction of causal edges across layers (A5) and on
+the separation of type-level from token-level structure (A6). They are part of the
+mechanisation (Section~\ref{sec:mech}) and play no role in the argument.
+
+\subsection{The rule}
+\label{sec:definition}
+
+\begin{definition}[Crossing]
+A \emph{crossing} is a map or relation $c$ between two structures $A$ and $B$ along which
+a claim established in one is reused in the other.
+\end{definition}
+
+\begin{definition}[Typed crossing]
+\label{def:typed}
+A crossing is \emph{typed} when it declares
+\begin{enumerate}[label=(\roman*)]
+  \item its \emph{kind}: the role in which the crossing is used, which fixes what a
+        failure of the crossing consists in; and
+  \item what it \emph{carries}: for each predicate or operation concerned, whether and
+        under which side conditions the crossing preserves it, reflects it, or both.
+\end{enumerate}
+\end{definition}
+
+\noindent
+For a crossing $c \subseteq A \times B$ and predicates $P_A$ on $A$ and $P_B$ on $B$,
+$c$ \emph{preserves} $P$ when $c(a,b)$ and $P_A(a)$ imply $P_B(b)$, and \emph{reflects}
+$P$ when $c(a,b)$ and $P_B(b)$ imply $P_A(a)$. Where both hold, $P$ is \emph{invariant}
+under $c$. Which of these a reuse needs depends on the side on which the claim was
+established. A property proved of a specification and asserted of an implementation
+needs one direction only. The invariance asked for by predicate locality is the
+two-directional case. Below, ``what a crossing preserves'' is short for this list. The
+definition is formalised in Section~\ref{sec:mech-crossing}.
+
+The rule proposed is that a crossing along which claims are carried be typed in this
+sense. The two components answer different questions. The kind says what would count as
+the crossing going wrong, and with it what sort of evidence can test it. The second
+component says which claims may be carried without further proof.
+
+The kind is a matter of role and not of mathematical structure. Whether a map is
+injective, or a homomorphism for some operation, belongs to the second component and can
+be proved. In which role the map is used, for instance whether its source is answerable
+to its target, cannot be proved from the map and has to be declared;
+Section~\ref{sec:three-kinds} gives the example.
+
+``Structure'' is meant broadly: a type in a proof assistant, a state space with its
+transition relation, a layer of a model. LEM's edge types are kinds in the sense of the
+definition for layered event models. Section~\ref{sec:three-kinds} distinguishes three
+roles for maps between types in a proof assistant. The two lists overlap, and the
+overlap is offered as a parallel, not as an identity.
+
+Table~\ref{tab:cases} summarises how the three cases instantiate the rule.
+
+\begin{table}[t]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}P{2.1cm}P{2.5cm}P{2.9cm}LL@{}}
+\toprule
+Case & Claim carried & Crossing & Declared locally & Left undeclared \\
+\midrule
+Casts in Lean~4 (Section~\ref{sec:casts}) &
+  An identity or relation on $\N$ &
+  The cast $\N \to \Z$ &
+  Bundled morphisms; move, elim and squash lemmas &
+  The kind of the coercion; a coercion instance says only that a canonical map exists \\
+Refinement (Section~\ref{sec:refinement}) &
+  A property of the specification &
+  The simulation relation between implementation and specification &
+  Preservation of properties of single executions; further properties by separate
+  proofs &
+  Which other properties survive; what ``verified'' is predicated of \\
+Written reasoning (Section~\ref{sec:reasoning}) &
+  ``The reasoning is correct'' &
+  From the trace to the rules, and from the trace to the computation &
+  Faithfulness distinguished from plausibility; tests by intervention &
+  Which of the two crossings a given check tests \\
+\bottomrule
+\end{tabularx}
+\caption{The three cases as instances of the rule.}
+\label{tab:cases}
+\end{table}

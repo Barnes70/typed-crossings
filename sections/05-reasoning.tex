@@ -1,0 +1,261 @@
+\section{Case: chain of thought and proof kernels}
+\label{sec:reasoning}
+
+\paragraph{Background.} A large language model computes its output in a \emph{forward
+pass}: a fixed sequence of arithmetic operations on its weights and on internal values
+called activations. Many models are trained or prompted to write intermediate steps
+before the final answer, a \emph{chain of thought}; each written token is fed back as
+input to the next forward pass. Where the task is a formal proof, the written steps can
+be a proof script that a proof assistant checks, as in recent systems for competition
+mathematics \citep{hubert2025}. An explanation is called \emph{faithful} when it
+accurately describes the process that produced the output, as opposed to \emph{plausible}
+when it is convincing to a reader \citep{jacovi2020}.
+
+\subsection{One word, five layers}
+
+``The model reasons'' is used for five things, which lie in different structures and are
+linked by edges of different types (Table~\ref{tab:reasoning}, Figure~\ref{fig:episode}).
+By predicate locality (A2) the word may be reused across them only where its truth
+conditions stay the same, and they do not.
+
+\begin{table}[t]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}P{1.8cm}P{5.2cm}P{2.4cm}L@{}}
+\toprule
+Layer & What ``reasoning'' means there & Structure & Edge and its type \\
+\midrule
+Activations &
+  The forward pass as arithmetic. &
+  S1 substrate &
+  Constitutive: the computation is realised by the activations; no time elapses. \\
+Mechanism &
+  Features and circuits across the network's layers, for example an internal two-step
+  lookup found in attribution graphs \citep{lindsey2025}. &
+  S2 events &
+  Causal: the mechanism produces the text; testable by intervention. \\
+Trace &
+  The chain of thought, or the proof script, that the model writes. &
+  S3 representation &
+  Representational, back to the mechanism: the text describes how the answer was
+  reached, and can misdescribe it. Also causal, forward: the written tokens are input
+  to later computation. \\
+Validity &
+  Each written step follows from the previous ones. &
+  S3 under a rule scheme &
+  Classificatory: the trace satisfies declared rules. A proof kernel checks this. \\
+Access &
+  Probes, attribution graphs, reading the trace. &
+  S4 epistemic &
+  Evidential: an observation supports an inference about the model. \\
+\bottomrule
+\end{tabularx}
+\caption{Five things called ``reasoning'' in a language model.}
+\label{tab:reasoning}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+    font=\small,
+    box/.style={draw, rounded corners=2pt, align=center, minimum width=6.0cm,
+                minimum height=1.0cm, inner sep=4pt},
+    side/.style={draw, rounded corners=2pt, align=center, minimum width=2.6cm,
+                minimum height=1.0cm, inner sep=4pt},
+    lab/.style={font=\footnotesize, align=center},
+    >={Stealth[length=2.2mm]}
+  ]
+  \node[box] (act)   at (0,0)    {S1 \textperiodcentered{} Activations\\\footnotesize weights, arithmetic};
+  \node[box] (mech)  at (0,3.1)  {S2 \textperiodcentered{} Mechanism\\\footnotesize features, circuits};
+  \node[box] (trace) at (0,6.2)  {S3 \textperiodcentered{} Trace\\\footnotesize chain of thought, proof script};
+  \node[side] (rules) at (6.5,6.2) {Rules\\\footnotesize declared scheme};
+  \node[side] (obs)   at (-6.5,3.1) {S4 \textperiodcentered{} Observer\\\footnotesize interventions};
+
+  \draw[->] (act) -- node[lab, right] {constitutive\\(no $\Delta t$)} (mech);
+  \draw[->] ([xshift=-22mm]mech.north) -- node[lab, left] {causal:\\produces} ([xshift=-22mm]trace.south);
+  \draw[->, dashed] (trace.south) -- node[lab, right] {representational:\\faithful?} (mech.north);
+  \draw[->] ([xshift=27mm]trace.south) -- node[lab, right] {causal:\\read back} ([xshift=27mm]mech.north);
+  \draw[->, very thick] (trace) -- node[lab, above] {classificatory:\\valid} (rules);
+  \draw[->] ([yshift=2.5mm]obs.east) -- node[lab, above] {intervention\\(causal)} ([yshift=2.5mm]mech.west);
+  \draw[->, dotted, thick] ([yshift=-2.5mm]mech.west) -- node[lab, below] {evidential} ([yshift=-2.5mm]obs.east);
+\end{tikzpicture}
+\caption{One reasoning episode, with typed edges. A check of validity (thick) runs from
+the trace to the rules. The edge that says whether the trace describes the mechanism
+(dashed) runs from the trace to the mechanism. The same text is also read back as input
+to later computation, a causal edge of its own. The observer intervenes, on the
+mechanism as drawn or on the text that is read back; what comes back is evidence
+(dotted).}
+\label{fig:episode}
+\end{figure}
+
+None of the five is the real reasoning with the others as metaphors. Each is a legitimate
+object with its own truth conditions. The difficulty arises only when a finding about one
+is reported as a finding about another: when a valid proof is taken as evidence of how
+the model computed, or a fluent chain of thought as a view of the mechanism.
+
+\subsection{The trace is a representation}
+
+A chain of thought is text the model writes. Its relation to the computation that
+produced it is representational: the text describes a route to the answer. Like any
+representation it can fail by misrepresenting. \citet{turpin2023} biased models toward
+particular answers, for instance by making the correct option always ``(A)'' in the
+examples, and found that the models followed the bias while their written explanations
+did not mention it. \citet{chen2025} found the same pattern in models trained to reason
+before answering: given a hint that changed their answer, they often did not say so in
+their chain of thought.
+
+Such findings are often reported with outcome labels: the model ``lied'' or
+``rationalised''. Each label adds a claim about intent or mechanism that the observation
+does not support. The observation is narrower: a representational edge failed. The text
+describes one route; the computation took another. Naming the edge type names the
+failure condition, correspondence, and with it what a test has to compare: the text
+with the process that produced it.
+
+The same text has a second role. Each written token is input to later forward passes,
+so the trace is also a cause of later computation. The two roles are edges of different
+types and can come apart: a text can influence the answer without describing how the
+answer was reached, and it can describe without influencing. \citet{lanham2023} test the
+causal role. They perturb the written reasoning, by truncating it or inserting
+mistakes, and measure how far the final answer changes, and they find that the
+dependence varies with model and task.
+
+\subsection{What a proof kernel certifies}
+\label{sec:kernel}
+
+Now replace the chain of thought by a proof in Lean. The elaborator turns what the model
+wrote into a proof term, and the kernel checks that term against the stated proposition,
+in a declared environment of definitions and axioms. If the kernel accepts, the
+proposition is proved relative to that environment, a guarantee no informal chain of
+thought has. The edge that was checked is the classificatory edge from the trace to the
+rules. The representational edge from the trace to the mechanism was not in view.
+
+This can be stated exactly in a small model.
+
+\begin{definition}[Reasoning system]
+\label{def:rs}
+A \emph{reasoning system} consists of a set $M$ of mechanisms, a set $T$ of traces, a
+function $\produce : M \to T$, a predicate $\valid \subseteq T$ and a relation
+$\faithful \subseteq T \times M$.
+\end{definition}
+
+\noindent
+Here $\produce$ stands for the causal edge from mechanism to trace, $\valid$ for the
+classificatory edge from trace to rules, and $\faithful(t,m)$ for the representational
+edge: the trace $t$ describes the mechanism $m$. Write $F(m)$ for
+$\faithful(\produce(m), m)$: the trace that $m$ writes describes $m$. A \emph{judgement
+on traces} is a predicate $D \subseteq T$. It \emph{agrees with faithfulness} when, for
+all $m \in M$, $D(\produce(m))$ holds if and only if $F(m)$.
+
+\begin{proposition}[Validity is blind to the mechanism]
+\label{prop:blind}
+If $\produce(m_1) = \produce(m_2)$, then $\valid(\produce(m_1))$ if and only if
+$\valid(\produce(m_2))$.
+\end{proposition}
+
+\begin{proposition}[When a judgement on traces can agree with faithfulness]
+\label{prop:char}
+A judgement on traces that agrees with faithfulness exists if and only if faithfulness
+is constant among the mechanisms that write the same trace: for all $m_1, m_2 \in M$,
+if $\produce(m_1) = \produce(m_2)$ then $F(m_1)$ if and only if $F(m_2)$.
+\end{proposition}
+
+\begin{corollary}[The obstruction]
+\label{cor:split}
+If two mechanisms write the same trace and the trace describes one of them and not the
+other, that is, $\produce(m_1) = \produce(m_2)$, $F(m_1)$ and not $F(m_2)$, then no
+judgement on traces agrees with faithfulness.
+\end{corollary}
+
+\noindent
+These results need no assumption about the relation $\faithful$. They are checked in
+Lean (Section~\ref{sec:mech}); the proofs take a few lines each. A judgement on traces
+can be anything that looks only at the trace: a proof kernel, a reward model, a human
+grader, a comparison with a reference answer. Suppose two routes, one following the
+stated steps and one using an unmentioned hint, write the same valid text, and the text
+describes the first and not the second. Then no judgement on the text sorts the
+faithful episode from the unfaithful one. Appendix~\ref{app:uniqueness} gives one
+condition under which a shared trace must have different verdicts, and the two-route
+example from the package.
+
+\begin{remark}[The results are elementary]
+Proposition~\ref{prop:blind} is the congruence of equality.
+Proposition~\ref{prop:char} says that a function of the trace can track a property of
+mechanisms exactly when that property does not vary among the mechanisms behind one
+trace. The paper claims no depth for these statements. Their use is that they fix which
+edge a check tests, in a setting where one word lets a guarantee about one edge pass for
+a guarantee about another.
+\end{remark}
+
+\begin{remark}[Scope]
+\label{rem:scope}
+(a) \emph{Existence, not computation.} A judgement on traces is an arbitrary predicate.
+Proposition~\ref{prop:char} says when one exists that agrees with faithfulness, not
+that it can be computed or found. In particular, a shared trace is by itself no
+obstruction: if two mechanisms write the same trace and it describes neither, the
+judgement that rejects the trace is right about both.
+(b) \emph{Decision, not evidence.} The results do not say that a trace carries no
+evidence about the mechanism. A feature of the text may correlate with faithfulness
+across many episodes. What Corollary~\ref{cor:split} excludes is a judgement on the
+text that is right on both episodes of a shared trace with different verdicts.
+(c) \emph{Production as a function.} $\produce$ is a function for simplicity. The
+argument uses only that one trace occurs with two mechanisms.
+\end{remark}
+
+Whether real models contain two computations that write an identical trace with
+different verdicts is an empirical question that this paper does not answer. The
+studies cited above show episodes in which the written reasoning omits a factor that
+changed the answer. They motivate the distinction between validity and faithfulness.
+They do not exhibit such a pair, and were not designed to.
+
+\subsection{Two clocks: layers and tokens}
+
+Within one forward pass, a computation can only be as serial as the network is deep: each
+layer is one step, and the depth is fixed. A chain of thought adds a second sequence,
+token positions. Every written token triggers a new forward pass that can read
+everything before it, so the serial depth available grows with the length of the trace.
+\citet{merrill2024} make this precise for a class of transformers. With logarithmically
+many intermediate steps the gain is slight; with linearly many, under an architectural
+assumption, all regular languages can be recognised; with polynomially many, the class
+is exactly the problems solvable in polynomial time. Under standard
+complexity-theoretic assumptions these are strict extensions of what the same
+transformers compute without intermediate steps.
+
+So the question of how many steps a model can reason has no answer until the sequence is
+declared: layers or tokens. The two lie in different places in
+Table~\ref{tab:reasoning}. Depth in layers is inside the mechanism (S2). Depth in tokens
+runs through the trace (S3), because the intermediate results are written down and read
+back. Approaches that feed continuous hidden states back in place of tokens, such as
+that of \citet{hao2024}, keep the second sequence and remove the written layer. The
+computation is no less real for that. It is less legible: the representation that could
+at least be read, and sometimes checked, is gone.
+
+\subsection{Grading the answer, grading the steps}
+
+Training follows the same division. Outcome-based rewards grade only the final answer.
+Process supervision grades each step, and on competition mathematics it trained more
+reliable reward models than outcome supervision did \citep{lightman2023}. A graded step
+is still a written step. Process supervision moves the judgement from the end of the
+trace to its inside; it does not move it off the trace's layer, and
+Proposition~\ref{prop:char} applies to it unchanged.
+
+What goes beyond a judgement on a fixed text is an intervention, and there are two
+places to intervene. One is the text as input: the written reasoning is perturbed and
+the change in the answer observed, as in the study of \citet{lanham2023}. This needs no
+access to the model's internals. The other is the mechanism: ablation and activation
+patching, and attribution graphs that trace which internal features drive which,
+validated by such interventions \citep{lindsey2025}. In both cases the observer
+obtains, by an evidential edge, an observation of how the process behaves under a
+change, and not only an observation of the text. These methods are costly and partial.
+A claim that a trace is faithful is a claim about a representational edge. Where
+faithfulness differs between computations that write the same trace, an exact judgement
+needs information beyond the trace (Corollary~\ref{cor:split}), and interventions are
+one way to obtain it.
+
+\paragraph{What the field does, and what the rule adds.} Interpretability research
+already separates faithfulness from plausibility and already tests explanations by
+intervention; causal abstraction gives that practice a formal theory
+(Section~\ref{sec:related}). The rule adds a plain statement of what follows for checks
+on text. Validity is a classificatory edge from text to rules. Faithfulness is a
+representational edge from text to mechanism. Whatever a check on the trace establishes,
+it establishes about the trace, and a model's own account of how it reasoned is one more
+trace. This does not make verified proofs less valuable: a valid proof is valid, whatever
+produced it. It limits what else may be concluded from the check.

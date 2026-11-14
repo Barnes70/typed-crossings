@@ -1,0 +1,135 @@
+\section{Case: casts in Lean 4}
+\label{sec:casts}
+
+\paragraph{Background.} A proof assistant such as Lean~4, Rocq or Isabelle/HOL checks
+proofs written in a formal language. In Lean, an \emph{elaborator} turns what the author
+writes into a fully explicit term, and a small \emph{kernel} checks that term against the
+rules of the type theory. Every term has a type. A natural number $n : \N$ is not an
+integer; where an integer is wanted, the term is ${\uparrow}n : \Z$, a different term of a
+different type. Node typing (A1) holds by construction.
+
+To stay usable, Lean gives syntactic continuity back in two ways. \emph{Typeclasses}
+(\code{Add}, \code{Sub}, \code{LE}) provide one symbol and one operation per type.
+\emph{Coercions} (\code{Coe} and its relatives) provide a map: where a term of type
+$\alpha$ stands in a place that expects $\beta$, the elaborator inserts
+${\uparrow} : \alpha \to \beta$.
+
+\subsection{Invisible in the source, placed by the elaborator}
+
+The inserted map is not hidden from the kernel, and Lean's goal display prints it as an
+arrow. What the author does not write, and so does not see in the source, is \emph{where}
+the elaborator puts it. That placement decides what the expression means:
+\begin{lstlisting}
+-- elaborated as ↑(2 - 3): subtract in ℕ, then cast
+example : ((2 - 3 : Nat) : Int) = 0 := rfl
+
+-- elaborated as ↑2 - ↑3: cast, then subtract in ℤ
+example : ((2 : Nat) - (3 : Nat) : Int) = -1 := rfl
+\end{lstlisting}
+On $\N$ the symbol \code{-} is truncated subtraction, where $a - b = 0$ whenever
+$a \le b$. On $\Z$ it is the group operation. The two readings agree only under a side
+condition:
+\[
+  {\uparrow}(a - b) \;=\; {\uparrow}a - {\uparrow}b \qquad\text{provided } b \le a .
+\]
+Lean's library states this as \code{Int.ofNat\_sub}, with the hypothesis in its
+signature. The cast from $\N$ to $\Z$ commutes with addition and multiplication
+unconditionally, and with subtraction conditionally. Nothing in the symbol \code{-} or in
+the arrow says so.
+
+\subsection{Where the library typed the edge}
+
+Mathlib \citep{mathlib2020} records the properties of the crossing in two places.
+
+\emph{Bundled morphisms.} Beside the bare coercion, the library holds the same map as an
+object whose type says what it preserves. \code{Nat.castRingHom} is the cast as a
+homomorphism of semirings; an embedding $\alpha \hookrightarrow \beta$ is a map together
+with a proof that it is injective; an equivalence $\alpha \simeq \beta$ carries its
+inverse. \citet{baanen2022} describes the design of these bundled structures and the
+classes that abstract over them.
+
+\emph{Cast lemmas.} The tactics \code{norm\_cast} and \code{push\_cast} work from lemmas
+registered for the purpose and sorted into three kinds \citep{lewis2020}. \emph{Move}
+lemmas say that a cast may be moved across an operation, as in
+${\uparrow}(a + b) = {\uparrow}a + {\uparrow}b$. \emph{Elim} lemmas say that a relation
+between casts is a relation between the originals, as in
+${\uparrow}a \le {\uparrow}b \leftrightarrow a \le b$. \emph{Squash} lemmas collapse a
+chain of casts into one.
+
+The automation reaches exactly as far as these registrations. Where a lemma is missing,
+the tactic stops, and the missing lemma is the undeclared property of the edge. Practice
+thus supports premise (P4) in both directions: a declared crossing can be automated, and
+an undeclared one is re-established by hand.
+
+What remains untyped is the coercion itself. An instance \code{Coe $\alpha$ $\beta$} says
+that a canonical map exists. It does not say what kind of map it is or what it preserves.
+That knowledge sits beside the map, lemma by lemma, in a database keyed on the
+operations.
+
+\subsection{Structure of the map and role of the crossing}
+\label{sec:three-kinds}
+
+Two things can be said about a map that crosses levels of construction in formalised
+mathematics, and they are independent. One is its mathematical structure: whether it is
+injective or many-to-one, and which operations it commutes with. The other is the role
+in which it is used, which decides what a failure of the crossing consists in.
+Table~\ref{tab:roles} gives three common roles.
+
+\begin{table}[t]
+\centering\small
+\begin{tabularx}{\textwidth}{@{}P{2.3cm}P{3.2cm}P{3.0cm}L@{}}
+\toprule
+Role & Example & Structure of the map & What a failure consists in \\
+\midrule
+Extension &
+  $\N \to \Z$; a subtype into its parent type &
+  Injective &
+  An operation has a wider meaning in the target than in the source, as subtraction
+  acquires negative results. The repair is a side condition under which the two
+  readings agree. \\
+Identification &
+  $\alpha \to \alpha/{\sim}$ &
+  Many-to-one &
+  A function on the source does not respect the declared relation, and so has no
+  counterpart on the classes. \\
+Representation &
+  \code{BitVec 64} $\to \N$; a floating-point value for a real; a G\"odel number for a
+  formula &
+  Injective in the first example &
+  Misrepresentation: the source stands for a referent in the target and does not
+  correspond to it. \\
+\bottomrule
+\end{tabularx}
+\caption{Three roles of a map between types. The first and third rows have the same
+structure and different roles.}
+\label{tab:roles}
+\end{table}
+
+In the first role the source is what it is and the target adds to it. In the second the
+target is defined by a relation declared on the source. Here Lean does type the
+crossing: \code{Quotient.lift} takes a function together with a proof that it respects
+the relation, and without that proof there is no term. In the third the source is
+correct or incorrect by reference to the target. For bit vectors,
+\code{(x + y).toNat = (x.toNat + y.toNat) \% 2\^{}64}, so the sum of two representations
+represents the sum only while nothing overflows.
+
+The roles are not exclusive classes of maps, and a map does not determine its role. The
+maps $\N \to \Z$ and \code{BitVec 64} $\to \N$ are both injective, and each commutes
+with some operation only under a condition. What differs is which side sets the
+standard, and that is not a property of the function. This is why the kind of a
+crossing has to be declared and cannot be inferred. It is also why the kind alone is not
+enough. A typed crossing needs both components of Definition~\ref{def:typed}: the kind,
+which says what a failure is, and the list of what is carried, which is where the
+structure of the map is recorded. Section~\ref{sec:mech-crossing} states both maps in
+Lean as crossings with their side conditions.
+
+LEM's edge taxonomy has the same shape. It has a representational type, whose failure is
+misrepresentation, and a classificatory type, which holds under a declared scheme and
+changes when the scheme changes, as a quotient class depends on the declared relation.
+
+\paragraph{What the field does, and what the rule adds.} Mathlib declares what a cast
+preserves, operation by operation, and its automation depends on those declarations. The
+rule adds one thing: the declaration belongs to the crossing as a whole, with its kind,
+and not only to pairs of a cast and an operation. Whether that would pay for itself in
+Lean's design is a question for its developers, and this paper does not propose a change
+to Lean.

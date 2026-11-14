@@ -1,0 +1,293 @@
+\begin{thebibliography}{39}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Abadi and Lamport(1991)]{abadi1991}
+Mart{\'\i}n Abadi and Leslie Lamport.
+\newblock The existence of refinement mappings.
+\newblock \emph{Theoretical Computer Science}, 82\penalty0 (2):\penalty0
+  253--284, 1991.
+\newblock \doi{10.1016/0304-3975(91)90224-P}.
+
+\bibitem[Abate et~al.(2019)Abate, Blanco, Garg, Hri{\c{t}}cu, Patrignani, and
+  Thibault]{abate2019}
+Carmine Abate, Roberto Blanco, Deepak Garg, C{\u{a}}t{\u{a}}lin Hri{\c{t}}cu,
+  Marco Patrignani, and J{\'e}r{\'e}my Thibault.
+\newblock Journey beyond full abstraction: Exploring robust property
+  preservation for secure compilation.
+\newblock In \emph{2019 IEEE 32nd Computer Security Foundations Symposium
+  (CSF)}. IEEE, 2019.
+\newblock arXiv:1807.04603.
+
+\bibitem[Alpern and Schneider(1985)]{alpern1985}
+Bowen Alpern and Fred~B. Schneider.
+\newblock Defining liveness.
+\newblock \emph{Information Processing Letters}, 21\penalty0 (4):\penalty0
+  181--185, 1985.
+
+\bibitem[Baanen(2022)]{baanen2022}
+Anne Baanen.
+\newblock Use and abuse of instance parameters in the {Lean} mathematical
+  library.
+\newblock In \emph{13th International Conference on Interactive Theorem Proving
+  (ITP 2022)}, volume 237 of \emph{LIPIcs}, pages 4:1--4:20. Schloss Dagstuhl
+  -- Leibniz-Zentrum f{\"u}r Informatik, 2022.
+\newblock \doi{10.4230/LIPIcs.ITP.2022.4}.
+
+\bibitem[Barez et~al.(2025)]{barez2025}
+Fazl Barez et~al.
+\newblock Chain-of-thought is not explainability.
+\newblock Preprint, Oxford Martin AI Governance Initiative, 2025.
+\newblock URL
+  \url{https://aigi.ox.ac.uk/publications/chain-of-thought-is-not-explainability}.
+
+\bibitem[Barthe et~al.(2020)Barthe, Blazy, Gr{\'e}goire, Hutin, Laporte,
+  Pichardie, and Trieu]{barthe2020}
+Gilles Barthe, Sandrine Blazy, Benjamin Gr{\'e}goire, R{\'e}mi Hutin, Vincent
+  Laporte, David Pichardie, and Alix Trieu.
+\newblock Formal verification of a constant-time preserving {C} compiler.
+\newblock \emph{Proceedings of the ACM on Programming Languages}, 4\penalty0
+  (POPL):\penalty0 Article 7, 2020.
+\newblock \doi{10.1145/3371075}.
+
+\bibitem[Breazu-Tannen et~al.(1991)Breazu-Tannen, Coquand, Gunter, and
+  Scedrov]{breazu1991}
+Val Breazu-Tannen, Thierry Coquand, Carl~A. Gunter, and Andre Scedrov.
+\newblock Inheritance as implicit coercion.
+\newblock \emph{Information and Computation}, 93\penalty0 (1):\penalty0
+  172--221, 1991.
+\newblock \doi{10.1016/0890-5401(91)90055-7}.
+
+\bibitem[Chen et~al.(2025)Chen, Benton, Radhakrishnan, Uesato, Denison,
+  Schulman, Somani, Hase, Wagner, Roger, Mikulik, Bowman, Leike, Kaplan, and
+  Perez]{chen2025}
+Yanda Chen, Joe Benton, Ansh Radhakrishnan, Jonathan Uesato, Carson Denison,
+  John Schulman, Arushi Somani, Peter Hase, Misha Wagner, Fabien Roger, Vlad
+  Mikulik, Samuel~R. Bowman, Jan Leike, Jared Kaplan, and Ethan Perez.
+\newblock Reasoning models don't always say what they think, 2025.
+\newblock arXiv:2505.05410.
+
+\bibitem[Clarkson and Schneider(2010)]{clarkson2010}
+Michael~R. Clarkson and Fred~B. Schneider.
+\newblock Hyperproperties.
+\newblock \emph{Journal of Computer Security}, 18\penalty0 (6):\penalty0
+  1157--1210, 2010.
+\newblock \doi{10.3233/JCS-2009-0393}.
+
+\bibitem[Craver and Bechtel(2007)]{craver2007}
+Carl~F. Craver and William Bechtel.
+\newblock Top-down causation without top-down causes.
+\newblock \emph{Biology and Philosophy}, 22\penalty0 (4):\penalty0 547--563,
+  2007.
+
+\bibitem[de~Moura and Ullrich(2021)]{demoura2021}
+Leonardo de~Moura and Sebastian Ullrich.
+\newblock The {Lean}~4 theorem prover and programming language.
+\newblock In \emph{Automated Deduction -- CADE 28}, volume 12699 of
+  \emph{LNAI}, pages 625--635. Springer, 2021.
+
+\bibitem[Fonseca et~al.(2017)Fonseca, Zhang, Wang, and
+  Krishnamurthy]{fonseca2017}
+Pedro Fonseca, Kaiyuan Zhang, Xi~Wang, and Arvind Krishnamurthy.
+\newblock An empirical study on the correctness of formally verified
+  distributed systems.
+\newblock In \emph{Proceedings of the Twelfth European Conference on Computer
+  Systems (EuroSys~'17)}, pages 328--343. ACM, 2017.
+\newblock \doi{10.1145/3064176.3064183}.
+
+\bibitem[Ge et~al.(2019)Ge, Yarom, Chothia, and Heiser]{ge2019}
+Qian Ge, Yuval Yarom, Tom Chothia, and Gernot Heiser.
+\newblock Time protection: The missing {OS} abstraction.
+\newblock In \emph{Proceedings of the Fourteenth EuroSys Conference
+  (EuroSys~'19)}, pages 1--17. ACM, 2019.
+\newblock \doi{10.1145/3302424.3303976}.
+
+\bibitem[Geiger et~al.(2025)Geiger, Ibeling, Zur, Chaudhary, Chauhan, Huang,
+  Arora, Wu, Goodman, Potts, and Icard]{geiger2025}
+Atticus Geiger, Duligur Ibeling, Amir Zur, Maheep Chaudhary, Sonakshi Chauhan,
+  Jing Huang, Aryaman Arora, Zhengxuan Wu, Noah Goodman, Christopher Potts, and
+  Thomas Icard.
+\newblock Causal abstraction: A theoretical foundation for mechanistic
+  interpretability.
+\newblock \emph{Journal of Machine Learning Research}, 26\penalty0
+  (83):\penalty0 1--64, 2025.
+
+\bibitem[Goguen and Burstall(1992)]{goguen1992}
+Joseph~A. Goguen and Rod~M. Burstall.
+\newblock Institutions: Abstract model theory for specification and
+  programming.
+\newblock \emph{Journal of the ACM}, 39\penalty0 (1):\penalty0 95--146, 1992.
+\newblock \doi{10.1145/147508.147524}.
+
+\bibitem[Hao et~al.(2024)Hao, Sukhbaatar, Su, Li, Hu, Weston, and
+  Tian]{hao2024}
+Shibo Hao, Sainbayar Sukhbaatar, DiJia Su, Xian Li, Zhiting Hu, Jason Weston,
+  and Yuandong Tian.
+\newblock Training large language models to reason in a continuous latent
+  space, 2024.
+\newblock arXiv:2412.06769.
+
+\bibitem[Hohfeld(1913)]{hohfeld1913}
+Wesley~Newcomb Hohfeld.
+\newblock Some fundamental legal conceptions as applied in judicial reasoning.
+\newblock \emph{Yale Law Journal}, 23\penalty0 (1):\penalty0 16--59, 1913.
+
+\bibitem[Hubert et~al.(2025)Hubert, Mehta, Sartran, et~al.]{hubert2025}
+Thomas Hubert, Rishi Mehta, Laurent Sartran, et~al.
+\newblock Olympiad-level formal mathematical reasoning with reinforcement
+  learning.
+\newblock \emph{Nature}, 2025.
+\newblock \doi{10.1038/s41586-025-09833-y}.
+
+\bibitem[Jacovi and Goldberg(2020)]{jacovi2020}
+Alon Jacovi and Yoav Goldberg.
+\newblock Towards faithfully interpretable {NLP} systems: How should we define
+  and evaluate faithfulness?
+\newblock In \emph{Proceedings of the 58th Annual Meeting of the Association
+  for Computational Linguistics}, pages 4198--4205. ACL, 2020.
+\newblock \doi{10.18653/v1/2020.acl-main.386}.
+
+\bibitem[Kim et~al.(2014)Kim, Daly, Kim, Fallin, Lee, Lee, Wilkerson, Lai, and
+  Mutlu]{kim2014}
+Yoongu Kim, Ross Daly, Jeremie Kim, Chris Fallin, Ji~Hye Lee, Donghyuk Lee,
+  Chris Wilkerson, Konrad Lai, and Onur Mutlu.
+\newblock Flipping bits in memory without accessing them: An experimental study
+  of {DRAM} disturbance errors.
+\newblock In \emph{Proceedings of the 41st Annual International Symposium on
+  Computer Architecture (ISCA~'14)}, pages 361--372. IEEE, 2014.
+\newblock \doi{10.1109/ISCA.2014.6853210}.
+
+\bibitem[Klein et~al.(2009)Klein, Elphinstone, Heiser, Andronick, Cock, Derrin,
+  Elkaduwe, Engelhardt, Kolanski, Norrish, Sewell, Tuch, and
+  Winwood]{klein2009}
+Gerwin Klein, Kevin Elphinstone, Gernot Heiser, June Andronick, David Cock,
+  Philip Derrin, Dhammika Elkaduwe, Kai Engelhardt, Rafal Kolanski, Michael
+  Norrish, Thomas Sewell, Harvey Tuch, and Simon Winwood.
+\newblock {seL4}: Formal verification of an {OS} kernel.
+\newblock In \emph{Proceedings of the 22nd ACM Symposium on Operating Systems
+  Principles (SOSP~'09)}, pages 207--220. ACM, 2009.
+
+\bibitem[Kocher et~al.(2019)Kocher, Horn, Fogh, Genkin, Gruss, Haas, Hamburg,
+  Lipp, Mangard, Prescher, Schwarz, and Yarom]{kocher2019}
+Paul Kocher, Jann Horn, Anders Fogh, Daniel Genkin, Daniel Gruss, Werner Haas,
+  Mike Hamburg, Moritz Lipp, Stefan Mangard, Thomas Prescher, Michael Schwarz,
+  and Yuval Yarom.
+\newblock Spectre attacks: Exploiting speculative execution.
+\newblock In \emph{2019 IEEE Symposium on Security and Privacy (SP)}, pages
+  1--19. IEEE, 2019.
+
+\bibitem[Korbak et~al.(2025)]{korbak2025}
+Tomek Korbak et~al.
+\newblock Chain of thought monitorability: A new and fragile opportunity for
+  {AI} safety, 2025.
+\newblock arXiv:2507.11473.
+
+\bibitem[Kreinz(2026{\natexlab{a}})]{kreinzlem}
+Bernhard Kreinz.
+\newblock Layered event modelling: Semantic separation as a precondition for
+  explicit causal analysis ({Version} 1.0).
+\newblock Zenodo, 2026{\natexlab{a}}.
+
+\bibitem[Kreinz(2026{\natexlab{b}})]{kreinzlemlean}
+Bernhard Kreinz.
+\newblock lem-lean: Layered event modelling in {Lean}~4 (version 0.4.0).
+\newblock Software, tag v0.4.0, commit c111aaf, 2026{\natexlab{b}}.
+\newblock URL \url{https://github.com/Barnes70/lem-lean}.
+
+\bibitem[Kreinz(2026{\natexlab{c}})]{kreinztlctc}
+Bernhard Kreinz.
+\newblock A cause-oriented cyber threat taxonomy: The top level cyber threat
+  clusters framework (v2.7).
+\newblock Zenodo, 2026{\natexlab{c}}.
+
+\bibitem[Lanham et~al.(2023)]{lanham2023}
+Tamera Lanham et~al.
+\newblock Measuring faithfulness in chain-of-thought reasoning, 2023.
+\newblock arXiv:2307.13702.
+
+\bibitem[Leroy(2009)]{leroy2009}
+Xavier Leroy.
+\newblock Formal verification of a realistic compiler.
+\newblock \emph{Communications of the ACM}, 52\penalty0 (7):\penalty0 107--115,
+  2009.
+\newblock \doi{10.1145/1538788.1538814}.
+
+\bibitem[Lewis and Madelaine(2020)]{lewis2020}
+Robert~Y. Lewis and Paul-Nicolas Madelaine.
+\newblock Simplifying casts and coercions, 2020.
+\newblock arXiv:2001.10594.
+
+\bibitem[Lightman et~al.(2023)Lightman, Kosaraju, Burda, Edwards, Baker, Lee,
+  Leike, Schulman, Sutskever, and Cobbe]{lightman2023}
+Hunter Lightman, Vineet Kosaraju, Yura Burda, Harri Edwards, Bowen Baker, Teddy
+  Lee, Jan Leike, John Schulman, Ilya Sutskever, and Karl Cobbe.
+\newblock Let's verify step by step, 2023.
+\newblock arXiv:2305.20050.
+
+\bibitem[Lindsey et~al.(2025)]{lindsey2025}
+Jack Lindsey et~al.
+\newblock On the biology of a large language model.
+\newblock Transformer Circuits Thread, 2025.
+\newblock URL
+  \url{https://transformer-circuits.pub/2025/attribution-graphs/biology.html}.
+
+\bibitem[Luo(1999)]{luo1999}
+Zhaohui Luo.
+\newblock Coercive subtyping.
+\newblock \emph{Journal of Logic and Computation}, 9\penalty0 (1):\penalty0
+  105--130, 1999.
+
+\bibitem[Merrill and Sabharwal(2024)]{merrill2024}
+William Merrill and Ashish Sabharwal.
+\newblock The expressive power of transformers with chain of thought.
+\newblock In \emph{The Twelfth International Conference on Learning
+  Representations (ICLR 2024)}, 2024.
+\newblock arXiv:2310.07923.
+
+\bibitem[Murray et~al.(2013)Murray, Matichuk, Brassil, Gammie, Bourke,
+  Seefried, Lewis, Gao, and Klein]{murray2013}
+Toby Murray, Daniel Matichuk, Matthew Brassil, Peter Gammie, Timothy Bourke,
+  Sean Seefried, Corey Lewis, Xin Gao, and Gerwin Klein.
+\newblock {seL4}: From general purpose to a proof of information flow
+  enforcement.
+\newblock In \emph{2013 IEEE Symposium on Security and Privacy}, pages
+  415--429. IEEE, 2013.
+\newblock \doi{10.1109/SP.2013.35}.
+
+\bibitem[Patrignani et~al.(2019)Patrignani, Ahmed, and Clarke]{patrignani2019}
+Marco Patrignani, Amal Ahmed, and Dave Clarke.
+\newblock Formal approaches to secure compilation: A survey of fully abstract
+  compilation and related work.
+\newblock \emph{ACM Computing Surveys}, 51\penalty0 (6):\penalty0
+  125:1--125:36, 2019.
+\newblock \doi{10.1145/3280984}.
+
+\bibitem[{The mathlib Community}(2020)]{mathlib2020}
+{The mathlib Community}.
+\newblock The {Lean} mathematical library.
+\newblock In \emph{Proceedings of the 9th ACM SIGPLAN International Conference
+  on Certified Programs and Proofs (CPP 2020)}, pages 367--381. ACM, 2020.
+\newblock \doi{10.1145/3372885.3373824}.
+
+\bibitem[Turpin et~al.(2023)Turpin, Michael, Perez, and Bowman]{turpin2023}
+Miles Turpin, Julian Michael, Ethan Perez, and Samuel~R. Bowman.
+\newblock Language models don't always say what they think: Unfaithful
+  explanations in chain-of-thought prompting.
+\newblock In \emph{Advances in Neural Information Processing Systems 36
+  (NeurIPS 2023)}, 2023.
+\newblock arXiv:2305.04388.
+
+\bibitem[von Wright(1951)]{vonwright1951}
+Georg~Henrik von Wright.
+\newblock Deontic logic.
+\newblock \emph{Mind}, 60\penalty0 (237):\penalty0 1--15, 1951.
+
+\bibitem[Woodward(2003)]{woodward2003}
+James Woodward.
+\newblock \emph{Making Things Happen: A Theory of Causal Explanation}.
+\newblock Oxford University Press, 2003.
+
+\end{thebibliography}
